@@ -1,0 +1,28 @@
+@charset "utf-8";
+/* CSS Document */
+
+#menu, .menu, #menu .menu li { margin:0px; background:#aaffff; padding:0px; }
+#menu li {float:left; display:inline; cursor:pointer; list-style:none; padding:10px 10px 10px 10px; background:#aaffff; border:1px #000 solid; position:relative;}
+#menu li ul.first {left:-1px; top:100%;}
+
+li, li a {color:#000; text-decoration:none;}
+#menu .menu li { width:100%; text-indent:10px; line-height:30px; margin-right:10px; border-top:1px #000 solid; border-bottom:1px #000 solid;
+border-left:none; border-right:none; background:#fff;}
+#menu li a {display:block; width:inherit; height:inherit;}
+
+ul.menu { display:none; }
+#menu li:hover > a, menu li:hover { color:#fff; background:#5CADB8; }
+ul.first:hover { background:#5CADB8;}
+li:hover > .menu { display:block; position:absolute; width:200px; top:-2px; left:50%; z-index:1000; border:1px #000 solid; padding:10px; }
+li:hover { position:relative; z-index:2000; }
+
+.expired {
+color: #ff0000;
+font-weight:bold;
+	}
+
+.unscheduled {
+background-color: #ffff00;
+
+	}
+	
