@@ -18,7 +18,7 @@ $sql = "CREATE TABLE IF NOT EXISTS orgcategory (
   orgcat_name varchar(20) NOT NULL,
   orgcat_notes text,
   PRIMARY KEY (orgcat_id)
-  )";
+  )ENGINE = MyISAM";
   
 // organization - stores data about organization.  Each location should be entered separately - use org_category to group together related organizations
 
@@ -49,7 +49,7 @@ $sql3 = "CREATE TABLE IF NOT EXISTS fooddrive (
   fooddrive_notes text,
   PRIMARY KEY (fooddrive_id),
   FOREIGN KEY (fooddrive_org) REFERENCES organization(org_id)
-  )";
+  )ENGINE = MyISAM";
 
 // staff - stores staff names to be assigned to pickup or dropoff
 
@@ -58,7 +58,7 @@ $sql4 = "CREATE TABLE IF NOT EXISTS staff (
   staff_name varchar(30) NOT NULL,
   staff_active tinyint(3) unsigned NOT NULL,
   PRIMARY KEY (staff_id)
-  )";
+  )ENGINE = MyISAM";
 
 // dropoff - stores dropoff data
 
@@ -71,7 +71,7 @@ $sql5 = "CREATE TABLE IF NOT EXISTS dropoff (
   PRIMARY KEY (dropoff_id),
   FOREIGN KEY (dropoff_fooddrive) REFERENCES fooddrive(fooddrive_id),
   FOREIGN KEY (dropoff_staff) REFERENCES staff(staff_id)
-  )";
+  )ENGINE = MyISAM";
   
 // pickup - stores pickup data
 
@@ -85,7 +85,7 @@ $sql6 = "CREATE TABLE IF NOT EXISTS pickup (
   PRIMARY KEY (pickup_id),
   FOREIGN KEY (pickup_fooddrive) REFERENCES fooddrive(fooddrive_id),
   FOREIGN KEY (pickup_staff) REFERENCES staff(staff_id)
-  )";
+  )ENGINE = MyISAM";
 
 // item - stores details of items that are to be dropped off/picked up
 
@@ -95,7 +95,7 @@ $sql7 = "CREATE TABLE IF NOT EXISTS item (
   item_active tinyint(3) unsigned NOT NULL,
   item_desc text,
   PRIMARY KEY (item_id)
-  )";
+  )ENGINE = MyISAM";
   
 // dropoffitem - stores items that are to be dropped off along with the id of the associated dropoff
   
@@ -107,7 +107,7 @@ $sql8 = "CREATE TABLE IF NOT EXISTS dropoffitem (
   PRIMARY KEY (dpitem_id),
   FOREIGN KEY (dpitem_dropoff) REFERENCES dropoff(dropoff_id),
   FOREIGN KEY (dpitem_itemid) REFERENCES item(item_id)
-  )";
+  )ENGINE = MyISAM";
   
 // pickupitem - stores items that are to be picked up along with the id of the associated pickup
   
@@ -119,7 +119,7 @@ $sql9 = "CREATE TABLE IF NOT EXISTS pickupitem (
   PRIMARY KEY (ppitem_id),
   FOREIGN KEY (ppitem_pickup) REFERENCES pickup(pickup_id),
   FOREIGN KEY (ppitem_itemid) REFERENCES item(item_id)
-  )";
+  )ENGINE = MyISAM";
 
 // Execute query
 
