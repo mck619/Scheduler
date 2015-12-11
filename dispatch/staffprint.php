@@ -15,22 +15,35 @@ var myCenter=new google.maps.LatLng(34.0251914,-118.4730959);
 
 function initialize()
 {
-var mapProp = {
-  center:myCenter,
-  zoom:11,
-  mapTypeId:google.maps.MapTypeId.ROADMAP
-  };
+	var mapProp = {
+  	center:myCenter,
+  	zoom:11,
+  	mapTypeId:google.maps.MapTypeId.ROADMAP
+};
 
 var map=new google.maps.Map(document.getElementById("googleMap"),mapProp);
 
-var marker=new google.maps.Marker({
-  position:myCenter,
-  });
-
-marker.setMap(map);
-}
 
 google.maps.event.addDomListener(window, 'load', initialize);
+<?php
+    $locs = array(
+        array("foo", "34.00", "-118.40"),
+        array("bar", "34.20", "-118.60"),
+        array("baz", "34.40", "-118.80")
+    );
+?>
+
+    var locations = <?php echo json_encode($locs); ?>;
+    
+    for (i = 0; i < locations.length; i++) {
+	console.log(locations[i]);
+      	marker = new google.maps.Marker({
+        position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+        map: map
+      });
+    }
+
+
 </script>
 </head>
 <?php 
