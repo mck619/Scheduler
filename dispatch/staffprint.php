@@ -6,6 +6,32 @@
 <link type="text/css" href="css/ui-lightness/jquery-ui-1.8.21.custom.css" rel="stylesheet" />
 <script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
 <script type="text/javascript" src="js/jquery-ui-1.8.21.custom.min.js"></script>
+<script
+src="http://maps.googleapis.com/maps/api/js">
+</script>
+
+<script>
+var myCenter=new google.maps.LatLng(34.0251914,-118.4730959);
+
+function initialize()
+{
+var mapProp = {
+  center:myCenter,
+  zoom:11,
+  mapTypeId:google.maps.MapTypeId.ROADMAP
+  };
+
+var map=new google.maps.Map(document.getElementById("googleMap"),mapProp);
+
+var marker=new google.maps.Marker({
+  position:myCenter,
+  });
+
+marker.setMap(map);
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+</script>
 </head>
 <?php 
 
@@ -71,9 +97,12 @@ echo '<table border="1"><tr><th>ID</th><th>Category</th><th>Organization Contact
 // run through each dropoff
 
 $curdate = new DateTime();
+$locations = array();
 
 while ($result2 = $result->fetch_assoc()) {
 
+	
+  array_push($locations, $result2["org_street"] . ' ' . $result2["org_city"] . ', ' . $result2["org_state"] . ' ' . $result2["org_zip"]);
   echo '<tr><td>' . $result2["dppp_id"] . '</td><td>' . $result2["orgcat_name"] . '</td><td>' . $result2["org_name"] . '<br>' . $result2["org_street"] . '<br>' . $result2["org_city"] . ', ' . $result2["org_state"] . ' ' . $result2["org_zip"] . '<p>'. $result2["org_contact"] . '<br>' . $result2["org_phone"] . '<br>' . '<a href="mailto:' . $result2["org_email"] . '">' . $result2["org_email"] . '</a></td><td>';
 
   echo nl2br($result2['org_notes']);
@@ -123,4 +152,30 @@ echo '</table>';
 
 $connect->close();
 
-?> 
+ 
+
+
+echo '<div id="googleMap" style="width:500px;height:380px;"></div>'
+
+
+
+
+?>
+
+<html>
+<body>
+
+<?php
+
+echo "<br>";
+foreach ($locations as $address){
+	$adrs_fixed = str_replace(' ', '+', $address);
+	echo $adrs_fixed;
+	echo "<br>";
+}
+?>
+
+</body>
+</html>
+
+
