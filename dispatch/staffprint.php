@@ -10,41 +10,7 @@
 src="http://maps.googleapis.com/maps/api/js">
 </script>
 
-<script>
-var myCenter=new google.maps.LatLng(34.0251914,-118.4730959);
 
-function initialize()
-{
-	var mapProp = {
-  	center:myCenter,
-  	zoom:11,
-  	mapTypeId:google.maps.MapTypeId.ROADMAP
-};
-
-var map=new google.maps.Map(document.getElementById("googleMap"),mapProp);
-
-
-google.maps.event.addDomListener(window, 'load', initialize);
-<?php
-    $locs = array(
-        array("foo", "34.00", "-118.40"),
-        array("bar", "34.20", "-118.60"),
-        array("baz", "34.40", "-118.80")
-    );
-?>
-
-    var locations = <?php echo json_encode($locs); ?>;
-    
-    for (i = 0; i < locations.length; i++) {
-	console.log(locations[i]);
-      	marker = new google.maps.Marker({
-        position: new google.maps.LatLng(locations[i][1], locations[i][2]),
-        map: map
-      });
-    }
-
-
-</script>
 </head>
 <?php 
 
@@ -110,12 +76,12 @@ echo '<table border="1"><tr><th>ID</th><th>Category</th><th>Organization Contact
 // run through each dropoff
 
 $curdate = new DateTime();
-$locations = array();
+$addresses = array();
 
 while ($result2 = $result->fetch_assoc()) {
 
 	
-  array_push($locations, $result2["org_street"] . ' ' . $result2["org_city"] . ', ' . $result2["org_state"] . ' ' . $result2["org_zip"]);
+  array_push($addresses, $result2["org_street"] . ' ' . $result2["org_city"] . ', ' . $result2["org_state"] . ' ' . $result2["org_zip"]);
   echo '<tr><td>' . $result2["dppp_id"] . '</td><td>' . $result2["orgcat_name"] . '</td><td>' . $result2["org_name"] . '<br>' . $result2["org_street"] . '<br>' . $result2["org_city"] . ', ' . $result2["org_state"] . ' ' . $result2["org_zip"] . '<p>'. $result2["org_contact"] . '<br>' . $result2["org_phone"] . '<br>' . '<a href="mailto:' . $result2["org_email"] . '">' . $result2["org_email"] . '</a></td><td>';
 
   echo nl2br($result2['org_notes']);
@@ -174,21 +140,86 @@ echo '<div id="googleMap" style="width:500px;height:380px;"></div>'
 
 
 ?>
-
 <html>
 <body>
+<script>
+
 
 <?php
 
-echo "<br>";
-foreach ($locations as $address){
-	$adrs_fixed = str_replace(' ', '+', $address);
-	echo $adrs_fixed;
-	echo "<br>";
-}
+	function address_to_geoloc( $address ) { 
+        	$url = "https://maps.googleapis.com/maps/api/geocode/json?address=".urlencode($address)."&key=AIzaSyD25QwTEwdC5jo20fVkIYiL815dAvjoagE&t=".time(); 
+ 
+        	$ch = curl_init(); 
+        	curl_setopt($ch, CURLOPT_URL, $url); 
+        	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE); 
+ 
+       	 	$body = curl_exec($ch); 
+        	curl_close($ch); 
+ 
+        	return $body; 
+	}
+
+	function pre( $msg ) { 
+       		if (is_string($msg) 
+        	&& json_decode($msg) !== FALSE) { 
+                	$msg = json_decode($msg, TRUE); 
+        	} 
+        	$msg = json_encode($msg, JSON_PRETTY_PRINT); 
+        	echo '<pre>'.$msg.'</pre>'; 
+	} 
+
+	foreach ($addresses as $k => $v) { 
+        	$json = address_to_geoloc($v); 
+        	//pre($json); 
+        	$data = json_decode($json, TRUE); 
+        	$coords = $data['results'][0]['geometry']['location']; 
+        	$locations[$k] = $coords; 
+        	$locations[$k]['address'] = $v; 
+	} 
+
+	//pre($locations); 
 ?>
 
+
+var myCenter=new google.maps.LatLng(34.0251914,-118.4730959);
+
+function initialize()
+{
+	var mapProp = {
+  	center:myCenter,
+  	zoom:11,
+  	mapTypeId:google.maps.MapTypeId.ROADMAP
+	}
+var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+
+
+
+
+    var locations = <?php echo json_encode($locations); ?>;
+    
+    for (i = 0; i < locations.length; i++) {
+	console.log(locations[i]);
+      	marker = new google.maps.Marker({
+        position: new google.maps.LatLng(locations[i]['lat'], locations[i]['lng']),
+        map: map
+      });
+	marker.setMap(map)
+    }
+
+
+
+	
+};
+
+
+google.maps.event.addDomListener(window, 'load', initialize);
+
+
+</script>
 </body>
-</html>
+<html>
+
+
 
 
